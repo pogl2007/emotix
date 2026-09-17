@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./backend
+    container_name: emotix-backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      EMOTIX_MODEL_PATH: /app/models/best_emotix.pt
+      # Браузер открывает фронт с этого адреса — его и пускаем через CORS
+      EMOTIX_CORS_ORIGINS: http://localhost:${FRONTEND_PORT:-3000},http://127.0.0.1:${FRONTEND_PORT:-3000}
+    volumes:
+      # Обученная модель с хоста. Без файла сервис стартует, /analyze/* вернёт 503
+      - ./backend/models:/app/models:ro
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Адрес API глазами браузера пользователя, не внутри docker-сети
+        NEXT_PUBLIC_API_URL: http://localhost:${BACKEND_PORT:-8000}
+    container_name: emotix-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
