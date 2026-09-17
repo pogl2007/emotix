@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Модели и датасет
+trainer/data/
+trainer/models/*.pt
+trainer/models/*.onnx
+trainer/results/
+backend/models/*.pt
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.vercel
+
+# Окружение
+.env
+.env.local
+frontend/.env.local
+
+# ОС
+.DS_Store
+Thumbs.db
